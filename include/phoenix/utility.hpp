@@ -1,0 +1,58 @@
+#ifndef PHOSTDLIB_UTILITY_HPP
+#define PHOSTDLIB_UTILITY_HPP
+#ifndef PHOSTDLIB_DONT_SUPPORT_PRINT
+#include <iostream>
+#endif
+
+namespace phoenix {
+  template <typename T1, typename T2>
+  struct pair {
+    T1 first;
+    T2 second;
+
+    #ifndef PHOSTDLIB_DONT_SUPPORT_PRINT
+    friend std::ostream& operator<<(std::ostream& os, const phoenix::pair<T1, T2>& p) {
+      return os << "{" << p.first << ", " << p.second << "}";
+    }
+    #endif
+  };
+
+  template <typename T>
+  T greater(const T& first, const T& second) {
+    return first > second ? first : second;
+  }
+
+  template <typename T>
+  T lesser(const T& first, const T& second) {
+    return first < second ? first : second;
+  }
+
+  template <typename T>
+  bool is_greater(const T& first, const T& second) {
+    return first > second;
+  }
+
+  template <typename T>
+  bool is_lesser(const T& first, const T& second) {
+    return first < second;
+  }
+
+  template <typename T>
+  void swap(T& first, T& second) {
+    T temporary = first;
+    first = second;
+    second = temporary;
+  }
+
+  template <typename T, typename F = bool(*)(const T&, const T&)>
+  bool is_sorted(T* begin, T* end, F compare) {
+    for(auto* it = begin + 1; it != end; ++it) {
+      if (!(compare(*(it), *(it - 1)))) {
+        return false;
+      }
+    }
+    return true;
+  }
+}
+
+#endif //PHOSTDLIB_UTILITY_HPP
