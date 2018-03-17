@@ -17,16 +17,19 @@ namespace phoenix {
     std::string _message;
   };
   template<typename F, typename OutputStream = std::ostream>
-  void run_test(F test_function, const std::string& test_name, OutputStream& output = std::cout) {
+  bool run_test(F test_function, const std::string& test_name, OutputStream& output = std::cout) {
     try {
       test_function();
     } catch (const test_exception &e) {
       output << '<' << test_name << "> " <<  e.what() << std::endl;
+      return false;
     } catch (const std::exception &e) {
       output << '<' << test_name << "> Non-test exception occurred: " << e.what() << std::endl;
+      return false;
     }
 
     output << test_name << " test passed!" << std::endl;
+    return true;
   }
 
 class test {
