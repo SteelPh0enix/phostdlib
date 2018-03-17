@@ -167,6 +167,15 @@ void iterator() {
       i++;
     }
   }
+
+  // Adress dereferencing test
+  {
+    std::size_t i = 0;
+    for(const auto& e: a) {
+      phoenix::test::eq(&e, &a[i], "Dereferenced iterator didn't returned the address of element!");
+      i++;
+    }
+  }
 }
 
 int main() {
