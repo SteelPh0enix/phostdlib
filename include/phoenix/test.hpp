@@ -2,6 +2,7 @@
 #define PHOSTDLIB_TEST_HPP
 #include <exception>
 #include <sstream>
+#include <iostream>
 
 namespace phoenix {
 
@@ -16,6 +17,19 @@ class test_exception : public std::exception {
  private:
   std::string _message;
 };
+
+  template<typename F, typename OutputStream = std::ostream>
+  void run_test(F test_function, const std::string& test_name, OutputStream& output = std::cout) {
+    try {
+      test_function();
+    } catch (const test_exception &e) {
+      output << '<' << test_name << "> " <<  e.what() << std::endl;
+    } catch (const std::exception &e) {
+      output << '<' << test_name << "> Non-test exception occurred: " << e.what() << std::endl;
+    }
+
+    output << test_name << " test passed!" << std::endl;
+  }
 
 class test {
  public:
