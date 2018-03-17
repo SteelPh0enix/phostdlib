@@ -78,13 +78,100 @@ void access() {
 void iterator() {
   phoenix::array<int, 10> a{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
+  // construction
   phoenix::test::eq(a.cbegin(), phoenix::array<int, 10>::const_iterator(&a[0]));
+  phoenix::test::eq(a.begin(), phoenix::array<int, 10>::iterator(&a[0]));
+  phoenix::test::eq(a.cend(), phoenix::array<int, 10>::const_iterator(&a[0] + 10));
+  phoenix::test::eq(a.end(), phoenix::array<int, 10>::iterator(&a[0] + 10));
 
+  // dereferencing
+  phoenix::test::eq(*a.begin(), a[0]);
+  phoenix::test::eq(*a.cbegin(), a[0]);
+  phoenix::test::eq(a.begin().operator->(), &a[0]);
+  phoenix::test::eq(a.cbegin().operator->(), &a[0]);
+
+  // incrementation and decrementation
+  {
+    auto it = a.begin() + 3;
+    phoenix::test::eq(*++it, a[4]);
+    phoenix::test::eq(*--it, a[3]);
+    phoenix::test::eq(*it++, a[3]);
+    phoenix::test::eq(*it, a[4]);
+    phoenix::test::eq(*it--, a[4]);
+    phoenix::test::eq(*it, a[3]);
+  }
+
+  {
+    auto it = a.cbegin() + 5;
+    phoenix::test::eq(*++it, a[6]);
+    phoenix::test::eq(*--it, a[5]);
+    phoenix::test::eq(*it++, a[5]);
+    phoenix::test::eq(*it, a[6]);
+    phoenix::test::eq(*it--, a[6]);
+    phoenix::test::eq(*it, a[5]);
+  }
+
+  // value comparsion and add/sub
+  phoenix::test::eq(*a.begin(), a[0]);
+  phoenix::test::eq(*(a.begin() + 3), a[3]);
+  phoenix::test::eq(*(a.end() - 1), a[9]);
+
+  phoenix::test::eq(*a.cbegin(), a[0]);
+  phoenix::test::eq(*(a.cbegin() + 3), a[3]);
+  phoenix::test::eq(*(a.cend() - 1), a[9]);
+
+  {
+    auto it = a.begin();
+    it += 3;
+    phoenix::test::eq(*it, a[3]);
+    it -= 2;
+    phoenix::test::eq(*it, a[1]);
+  }
+
+  {
+    auto it = a.cend();
+    it -= 4;
+    phoenix::test::eq(*it, a[6]);
+    it += 2;
+    phoenix::test::eq(*it, a[8]);
+  }
+
+  // comparsion
+  phoenix::test::neq(a.begin(), a.end());
+  phoenix::test::eq(a.begin() + 2, a.end() - 8);
+  phoenix::test::neq(a.cbegin(), a.cend());
+  phoenix::test::eq(a.cbegin() + 3, a.cend() - 7);
+
+  // manual iteration
+  for(auto it = a.begin(); it != a.end(); it++) {
+    *(it)++;
+  }
+
+  {
+    std::size_t i = 0;
+    for (auto it = a.cbegin(); it != a.cend(); it++) {
+      phoenix::test::eq(*it, a[i]);
+      i++;
+    }
+  }
+
+  // range-based for iteration
+  for(auto& e: a) {
+    e++;
+  }
+
+  {
+    std::size_t i = 0;
+    for (const auto &e: a) {
+      phoenix::test::eq(e, a[i]);
+      i++;
+    }
+  }
 }
 
 int main() {
   phoenix::run_test(create_array, "Create array");
+  phoenix::run_test(iterator, "Iterator");
   phoenix::run_test(copy_ctors, "Copy constructors");
   phoenix::run_test(access, "Access");
-  phoenix::run_test(iterator, "Iterator");
 }

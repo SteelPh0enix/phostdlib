@@ -107,11 +107,11 @@ class test {
                    << " container is bigger> " << message;
       throw test_exception(exmsg_stream.str());
     }
-    auto first_it = first.cbegin();
-    auto second_it = second.cbegin();
+    auto first_it = first.begin();
+    auto second_it = second.begin();
     std::size_t i = 0;
     // Since containers have same lengths...
-    while (first_it != first.cend()) {
+    while (first_it != first.end()) {
       if (*first_it != *second_it) {
         std::stringstream exmsg_stream;
         exmsg_stream << "<test::container_equal failed: " << *first_it

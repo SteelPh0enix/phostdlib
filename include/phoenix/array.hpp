@@ -16,18 +16,19 @@ namespace phoenix {
     using value_type = T;
     using reference = T&;
     using const_reference = const T&;
+    using pointer = T*;
+    using const_pointer = const T*;
     using difference_type = std::ptrdiff_t;
     using size_type = std::size_t;
 
     class iterator {
     public:
       using self = iterator;
-      using pointer_type = T*;
       static constexpr auto iterator_type = iterator_flag::random_access;
 
-      explicit iterator(pointer_type e) : _ptr{e} {}
+      explicit iterator(pointer e) : _ptr{e} {}
 
-      self operator++() {
+      self& operator++() {
         _ptr++;
         return *this;
       }
@@ -38,7 +39,7 @@ namespace phoenix {
         return t;
       }
 
-      self operator--() {
+      self& operator--() {
         _ptr--;
         return *this;
       }
@@ -53,66 +54,7 @@ namespace phoenix {
         return *_ptr;
       }
 
-      pointer_type operator->() {
-        return _ptr;
-      }
-
-      bool operator==(const self& other) {
-        return _ptr == other._ptr;
-      }
-
-      bool operator!=(const self& other) {
-        return _ptr != other._ptr;
-      }
-
-      self operator+(difference_type x) {
-        return self(_ptr + x);
-      }
-
-      self operator-(difference_type x) {
-        return self(_ptr - x);
-      }
-
-    private:
-      pointer_type _ptr;
-    };
-
-    class const_iterator {
-    public:
-      using self = const_iterator;
-      using pointer_type = const T*;
-      using difference_type = std::ptrdiff_t;
-      static constexpr auto iterator_type = iterator_flag::random_access;
-
-      explicit const_iterator(pointer_type e) : _ptr{e} {}
-
-      self operator++() {
-        _ptr++;
-        return *this;
-      }
-
-      self operator++(int) {
-        auto t = *this;
-        this->operator++();
-        return t;
-      }
-
-      self operator--() {
-        _ptr--;
-        return *this;
-      }
-
-      self operator--(int) {
-        auto t = *this;
-        this->operator--();
-        return t;
-      }
-
-      reference operator*() const {
-        return *_ptr;
-      }
-
-      pointer_type operator->() const {
+      pointer operator->() {
         return _ptr;
       }
 
@@ -132,8 +74,93 @@ namespace phoenix {
         return self(_ptr - x);
       }
 
+      self& operator+=(difference_type x) {
+        _ptr += x;
+        return *this;
+      }
+
+      self& operator-=(difference_type x) {
+        _ptr -= x;
+        return *this;
+      }
+
+      friend std::ostream& operator<<(std::ostream& os, const iterator& it) {
+        return os << it._ptr;
+      }
+
     private:
-      pointer_type _ptr;
+      pointer _ptr;
+    };
+
+    class const_iterator {
+    public:
+      using self = const_iterator;
+      static constexpr auto iterator_type = iterator_flag::random_access;
+
+      explicit const_iterator(const_pointer e) : _ptr{e} {}
+
+      self& operator++() {
+        _ptr++;
+        return *this;
+      }
+
+      self operator++(int) {
+        auto t = *this;
+        this->operator++();
+        return t;
+      }
+
+      self& operator--() {
+        _ptr--;
+        return *this;
+      }
+
+      self operator--(int) {
+        auto t = *this;
+        this->operator--();
+        return t;
+      }
+
+      const_reference operator*() const {
+        return *_ptr;
+      }
+
+      const_pointer operator->() const {
+        return _ptr;
+      }
+
+      bool operator==(const self& other) const {
+        return _ptr == other._ptr;
+      }
+
+      bool operator!=(const self& other) const {
+        return _ptr != other._ptr;
+      }
+
+      self operator+(difference_type x) {
+        return self(_ptr + x);
+      }
+
+      self operator-(difference_type x) {
+        return self(_ptr - x);
+      }
+
+      self& operator+=(difference_type x) {
+        _ptr += x;
+        return *this;
+      }
+
+      self& operator-=(difference_type x) {
+        _ptr -= x;
+        return *this;
+      }
+
+      friend std::ostream& operator<<(std::ostream& os, const const_iterator& it) {
+        return os << it._ptr;
+      }
+
+    private:
+      const_pointer _ptr;
     };
 
     using iterator = iterator;
@@ -193,6 +220,10 @@ namespace phoenix {
 
     iterator begin() { return iterator(_data); }
     iterator end() { return iterator(_data + N); }
+    const_iterator begin() const { return const_iterator(_data); }
+    const_iterator end() const { return const_iterator(_data + N); }
+
+    // This is probably just a workaround for const-compatibility
     const_iterator cbegin() const { return const_iterator(_data); }
     const_iterator cend() const { return const_iterator(_data + N); }
 
