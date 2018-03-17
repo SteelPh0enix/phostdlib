@@ -75,8 +75,16 @@ void access() {
   }
 }
 
+void iterator() {
+  phoenix::array<int, 10> a{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+  phoenix::test::eq(a.cbegin(), phoenix::array<int, 10>::const_iterator(&a[0]));
+
+}
+
 int main() {
   phoenix::run_test(create_array, "Create array");
   phoenix::run_test(copy_ctors, "Copy constructors");
   phoenix::run_test(access, "Access");
+  phoenix::run_test(iterator, "Iterator");
 }
