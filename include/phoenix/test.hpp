@@ -16,6 +16,7 @@ namespace phoenix {
    private:
     std::string _message;
   };
+
   template<typename F, typename OutputStream = std::ostream>
   bool run_test(F test_function, const std::string& test_name, OutputStream& output = std::cout) {
     try {

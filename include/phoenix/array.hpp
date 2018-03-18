@@ -26,6 +26,12 @@ namespace phoenix {
       using self = iterator;
       static constexpr auto iterator_type = iterator_flag::random_access;
 
+      using value_type = value_type;
+      using reference = reference;
+      using pointer = pointer;
+      using difference_type = difference_type;
+      using size_type = size_type;
+
       explicit iterator(pointer e) : _ptr{e} {}
 
       self& operator++() {
@@ -97,6 +103,12 @@ namespace phoenix {
       using self = const_iterator;
       static constexpr auto iterator_type = iterator_flag::random_access;
 
+      using value_type = value_type;
+      using const_reference = const_reference;
+      using const_pointer = const_pointer;
+      using difference_type = difference_type;
+      using size_type = size_type;
+
       explicit const_iterator(const_pointer e) : _ptr{e} {}
 
       self& operator++() {
@@ -163,18 +175,15 @@ namespace phoenix {
       const_pointer _ptr;
     };
 
-    using iterator = iterator;
-    using const_iterator = const_iterator;
-
     // proper constexpr support since C++14 standard
     #if __cplusplus >= 201402L
     constexpr array() : _data{} {}
 
-    constexpr explicit array(T value) {
+    constexpr explicit array(value_type value) {
       for (auto* x = _data; x != _data + N; ++x) *x = value;
     }
 
-    constexpr array(const std::initializer_list<T>& init_list) : _data{} {
+    constexpr array(const std::initializer_list<value_type>& init_list) : _data{} {
       if (init_list.size() > N)
         throw std::out_of_range("Initializer list too large!");
 
@@ -187,11 +196,11 @@ namespace phoenix {
     #else
     array() : _data{} {}
 
-    explicit array(T value) {
+    explicit array(value_type value) {
       for (auto* x = _data; x != _data + N; ++x) *x = value;
     }
 
-    array(const std::initializer_list<T>& init_list) : _data{} {
+    array(const std::initializer_list<value_type>& init_list) : _data{} {
       if (init_list.size() > N)
         throw std::out_of_range("Initializer list too large!");
 
@@ -202,17 +211,17 @@ namespace phoenix {
     }
     #endif
 
-    array(const array<T, N>& other) : _data{} {
+    array(const array<value_type, N>& other) : _data{} {
       auto* i = _data;
       for (const auto& x : other) *(i++) = x;
     }
 
-    explicit array(const std::array<T, N>& other) : _data{} {
+    explicit array(const std::array<value_type, N>& other) : _data{} {
       auto* i = _data;
       for (const auto& x : other) *(i++) = x;
     }
 
-    array<T, N>& operator=(const array<T, N>& other) {
+    array<value_type, N>& operator=(const array<value_type, N>& other) {
       auto* i = _data;
       for (const auto& x : other) *(i++) = x;
       return *this;
@@ -227,19 +236,20 @@ namespace phoenix {
     const_iterator cbegin() const { return const_iterator(_data); }
     const_iterator cend() const { return const_iterator(_data + N); }
 
-    T& operator[](std::size_t i) { return _data[i]; }
-    const T& operator[](std::size_t i) const { return _data[i]; }
+    reference operator[](size_type i) { return _data[i]; }
+    const_reference operator[](size_type i) const { return _data[i]; }
 
-    T& at(std::size_t i) {
-      if (i >= N) throw std::out_of_range("Array index out of bounds!");
-      return _data[i];
-    }
-    const T& at(std::size_t i) const {
+    reference at(size_type i) {
       if (i >= N) throw std::out_of_range("Array index out of bounds!");
       return _data[i];
     }
 
-    std::size_t size() const { return N; }
+    const_reference at(size_type i) const {
+      if (i >= N) throw std::out_of_range("Array index out of bounds!");
+      return _data[i];
+    }
+
+    size_type size() const { return N; }
 
     #ifndef PHOSTDLIB_DONT_SUPPORT_PRINT
     std::ostream& print(std::ostream& os, const char* separator = ", ") const {
@@ -247,7 +257,7 @@ namespace phoenix {
       return os;
     }
 
-    friend std::ostream& operator<<(std::ostream& os, const array<T, N>& vec) {
+    friend std::ostream& operator<<(std::ostream& os, const array<value_type, N>& vec) {
       os << '{';
       auto it = vec.cbegin();
       for (; it != vec.cend() - 1; it++) os << *it << ", ";
@@ -256,7 +266,7 @@ namespace phoenix {
     #endif
 
    private:
-    T _data[N];
+    value_type _data[N];
   };
 }  // namespace phoenix
 

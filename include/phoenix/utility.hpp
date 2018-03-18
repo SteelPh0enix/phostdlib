@@ -44,9 +44,11 @@ namespace phoenix {
     second = temporary;
   }
 
-  template <typename T, typename F = bool(*)(const T&, const T&)>
-  bool is_sorted(T* begin, T* end, F compare) {
-    for(auto* it = begin + 1; it != end; ++it) {
+  //TODO: Maybe use std::enable_if? Or some metaprogramming?
+  template <typename ConstIterator, typename Compare = bool(*)(typename ConstIterator::const_reference,
+                                                          typename ConstIterator::const_reference)>
+  bool is_sorted(ConstIterator begin, ConstIterator end, Compare compare) {
+    for(auto it = begin + 1; it != end; ++it) {
       if (!(compare(*(it), *(it - 1)))) {
         return false;
       }
