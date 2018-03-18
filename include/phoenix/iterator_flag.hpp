@@ -1,5 +1,6 @@
 #ifndef PHOSTDLIB_ITERATOR_HPP
 #define PHOSTDLIB_ITERATOR_HPP
+#include <type_traits>
 
 namespace phoenix {
   enum class iterator_flag : unsigned {

@@ -27,6 +27,14 @@ public:
     using self = iterator;
     static constexpr auto iterator_type = iterator_flag::random_access;
 
+    using value_type = value_type;
+    using reference = reference;
+    using const_reference = const T&;
+    using pointer = pointer;
+    using const_pointer = const T*;
+    using difference_type = std::ptrdiff_t;
+    using size_type = std::size_t;
+
     explicit iterator(pointer e) : _ptr{e} {}
 
     self& operator++() {
@@ -97,6 +105,12 @@ public:
   public:
     using self = const_iterator;
     static constexpr auto iterator_type = iterator_flag::random_access;
+
+    using value_type = value_type;
+    using const_reference = const_reference;
+    using const_pointer = const_pointer;
+    using difference_type = std::ptrdiff_t;
+    using size_type = std::size_t;
 
     explicit const_iterator(const_pointer e) : _ptr{e} {}
 

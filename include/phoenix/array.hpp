@@ -29,6 +29,8 @@ namespace phoenix {
       using value_type = value_type;
       using reference = reference;
       using pointer = pointer;
+      using const_reference = const_reference;
+      using const_pointer = const_pointer;
       using difference_type = difference_type;
       using size_type = size_type;
 

@@ -33,8 +33,28 @@ namespace phoenix {
   }
 
   template <typename T>
+  bool is_greater_or_equal(const T& first, const T& second) {
+    return first >= second;
+  }
+
+  template <typename T>
   bool is_lesser(const T& first, const T& second) {
     return first < second;
+  }
+
+  template <typename T>
+  bool is_lesser_or_equal(const T& first, const T& second) {
+    return first <= second;
+  }
+
+  template <typename T>
+  bool is_equal(const T& first, const T& second) {
+    return first == second;
+  }
+
+  template <typename T>
+  bool is_not_equal(const T& first, const T& second) {
+    return first != second;
   }
 
   template <typename T>
@@ -45,11 +65,10 @@ namespace phoenix {
   }
 
   //TODO: Maybe use std::enable_if? Or some metaprogramming?
-  template <typename ConstIterator, typename Compare = bool(*)(typename ConstIterator::const_reference,
-                                                          typename ConstIterator::const_reference)>
-  bool is_sorted(ConstIterator begin, ConstIterator end, Compare compare) {
-    for(auto it = begin + 1; it != end; ++it) {
-      if (!(compare(*(it), *(it - 1)))) {
+  template <typename ConstIterator, typename Compare = decltype(is_greater<typename ConstIterator::const_reference>)>
+  bool is_sorted(ConstIterator begin, ConstIterator end, Compare compare = is_greater) {
+    for(auto it = begin; it + 1 != end; ++it) {
+      if (compare(*(it), *(it + 1))) {
         return false;
       }
     }
